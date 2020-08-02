@@ -1,6 +1,6 @@
 <template>
-  <view class="h-home">
-    <Search />
+  <view class="h-home" :class="{isSearch:isSearch}">
+    <Search :isSearch.sync="isSearch" />
     <view class="h-home-swiper">
       <swiper
         indicator-dots
@@ -9,21 +9,22 @@
         autoplay
         interval="3000"
       >
-        <block v-for="item in 3" :key="item">
+        <block v-for="item in swiperList" :key="item.goods_id">
           <swiper-item>
             <navigator>
-              <image :src="`/static/uploads/banner${item+1}.png`" />
+              <image :src="item.image_src" />
             </navigator>
           </swiper-item>
         </block>
       </swiper>
     </view>
-      <view class="h-home-category">
-        <view class="category-item" v-for="item in 4" :key="item">
-          <view></view>
-          <text>化妆品</text>
+    <view class="h-home-category">
+      <view class="category-item" v-for="(item,index) in categoryList" :key="index">
+        <view>
         </view>
+        <text>{{item.name}}</text>
       </view>
+    </view>
     <view v-for="item in 4" :key="item">
       <view class="h-home-navigat1"></view>
       <view class="h-home-navigat1_1 clearfix">
@@ -34,7 +35,7 @@
         </view>
       </view>
     </view>
-    <view class="h-home-top">top</view>
+    <view class="h-home-top" v-show="scrollTop > 200" @click="backTop">top</view>
   </view>
 </template>
 
@@ -43,7 +44,43 @@ import Search from '@/components/search'
 export default {
   data() {
     return {
+      isSearch: false,
+      scrollTop:'',
+      swiperList: [],
+      categoryList: []
     }
+  },
+  methods: {
+    backTop(){
+      wx.pageScrollTo({
+        scrollTop:0
+      })
+    },
+    async getCategoryList() {
+       const { data: { message } } = await this.request({
+        url: 'home/catitems'
+      })
+      this.categoryList = message
+     },
+    async getSwiperList() {
+      const { data: { message } } = await this.request({
+        url: 'home/swiperdata'
+      })
+      this.swiperList = message
+    }
+  },
+  onLoad() {
+    this.getSwiperList()
+    this.getCategoryList()
+  },
+  // 框架 / 框架接口 / page
+  onPageScroll(e){
+    this.scrollTop=  e.scrollTop
+  },
+  async onPullDownRefresh(){
+   await this.getSwiperList()
+   await this.getCategoryList()
+    uni.stopPullDownRefresh()
   },
   components: {
     Search
@@ -52,7 +89,7 @@ export default {
 </script>
 
 <style scoped lang='less'>
-.h-home-top{
+.h-home-top {
   position: fixed;
   bottom: 10rpx;
   right: 10rpx;
@@ -85,7 +122,7 @@ export default {
     }
     &:nth-child(2) image,
     &:nth-child(3) image {
-      margin-bottom:10rpx;
+      margin-bottom: 10rpx;
     }
   }
 }
