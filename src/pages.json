@@ -15,6 +15,12 @@
 		},
 		{
 			"path":"pages/user/index"
+		},
+		{
+			"path":"pages/list/index"
+		},
+		{
+			"path":"pages/goods/index"
 		}
 	],
 	"globalStyle": {

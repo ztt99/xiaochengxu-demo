@@ -2,24 +2,28 @@
   <view class="c-category" :class="{isSearch:isSearch}">
     <Search :isSearch.sync="isSearch" />
     <view class="c-category-all">
-      <view class="c-category-slide">
-        <view
-          class="slide-item"
-          :class="{'current-item':index===currentIndex}"
-          v-for="(item,index) in categoryList"
-          :key="item.cat_id"
-          @click="handleClick(index)"
-        >{{item.cat_name}}</view>
-      </view>
-      <view class="c-category-container" >
-        <view v-for="brand in categoryItem" :key="brand.cat_id" class="clearfix">
-          <view class="container-title">{{brand.cat_name}}</view>
-          <view class="container-item" v-for="item in brand.children" :key="item.cat_id">
-            <image :src="item.cat_icon" />
-            <text>{{item.cat_name}}</text>
+      <scroll-view scroll-y>
+        <view class="c-category-slide">
+          <view
+            class="slide-item"
+            :class="{'current-item':index===currentIndex}"
+            v-for="(item,index) in categoryList"
+            :key="item.cat_id"
+            @click="handleClick(index)"
+          >{{item.cat_name}}</view>
+        </view>
+      </scroll-view>
+      <scroll-view scroll-y>
+        <view class="c-category-container">
+          <view v-for="brand in categoryItem" :key="brand.cat_id" class="clearfix">
+            <view class="container-title">{{brand.cat_name}}</view>
+            <view class="container-item" v-for="item in brand.children" :key="item.cat_id">
+              <image :src="item.cat_icon" />
+              <text>{{item.cat_name}}</text>
+            </view>
           </view>
         </view>
-      </view>
+      </scroll-view>
     </view>
   </view>
 </template>
@@ -29,7 +33,7 @@ import Search from '@/components/search'
 export default {
   data() {
     return {
-      currentIndex :0,
+      currentIndex: 0,
       isSearch: false,
       categoryList: []
     }
@@ -43,7 +47,7 @@ export default {
     }
   },
   methods: {
-    handleClick(i){
+    handleClick(i) {
       this.currentIndex = i
     },
     async getCategoryList() {
@@ -64,8 +68,20 @@ export default {
 .c-category {
   .c-category-all {
     display: flex;
+    position: absolute;
+    top: 100rpx;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    &>scroll-view:first-child{
+      width: 170rpx;
+    }
+    &>scroll-view:last-child{
+      flex: 1;
+    }
   }
   .c-category-container {
+    flex: 1;
     .container-title {
       width: 100%;
       height: 80rpx;
@@ -87,6 +103,7 @@ export default {
     }
   }
   .c-category-slide {
+    width: 170rpx;
     .slide-item {
       font-size: 26rpx;
       width: 170rpx;

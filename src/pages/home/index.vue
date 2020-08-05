@@ -11,7 +11,7 @@
       >
         <block v-for="item in swiperList" :key="item.goods_id">
           <swiper-item>
-            <navigator>
+            <navigator url="/pages/goods/index">
               <image :src="item.image_src" />
             </navigator>
           </swiper-item>
@@ -69,7 +69,14 @@ export default {
       this.swiperList = message
     }
   },
+   onShareAppMessage(res) {
+    return {
+      title: '自定义标题',
+      imageUrl: 'https://pics7.baidu.com/feed/64380cd7912397ddee15ce4bf0a6a2b0d0a28738.jpeg?token=632d34fec4d27374225d5481c48ba8d4',
+    }
+  },
   onLoad() {
+    uni.showShareMenu()
     this.getSwiperList()
     this.getCategoryList()
   },

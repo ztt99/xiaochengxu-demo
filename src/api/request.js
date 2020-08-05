@@ -4,18 +4,19 @@ module.exports = function (config) {
     
 
     Vue.prototype.request =async function (params) {
-      const { url } = params
+      const { url,data,method } = params
       // 显示加载状态
       uni.showLoading({
         title: '正在加载...',
         mask: true
       });
-      const data =  await  uni.request({
-        url:baseUrl + url
+      const res =  await  uni.request({
+        url: baseUrl + url,
+        [method==='post'? 'params':'data']:data
       })
-      if (!data[0]) {
+      if (!res[0]) {
       uni.hideLoading();
-        return data[1]
+        return res[1]
       } else {
         uni.showLoading({
           title: '请求失败',
